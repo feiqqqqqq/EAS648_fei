@@ -1,0 +1,40 @@
+---
+title: "EAS648_Lab1_Fei"
+author: "Feixue Qi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(sf)
+library(tidyverse)
+```
+```{r}
+boulder <- st_read("C:/Users/qifei/OneDrive/桌面/EAS 648/EAS648_fei/input/Boulder_Data-20231025T203913Z-001/Boulder_Data/BoulderSocialMedia.shp")
+boulder
+```
+```{r}
+ggplot() +
+    geom_sf(data =boulder,
+    fill = NA, alpha = .2) +
+    theme_bw()
+```
+
+
+```{r}
+# change projection
+boulder = st_transform(boulder, 26753) 
+ggplot() +
+    geom_sf(data =boulder,
+    fill = NA, alpha = .2) +
+    theme_bw()
+```
+```{r}
+
+```
+
