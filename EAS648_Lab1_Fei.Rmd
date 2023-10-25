@@ -13,6 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(sf)
 library(tidyverse)
+library(sf)
+library(ggspatial)
+library(viridisLite)
+library(viridis)
+library(tmap)
 ```
 ```{r}
 boulder <- st_read("C:/Users/qifei/OneDrive/桌面/EAS 648/EAS648_fei/input/Boulder_Data-20231025T203913Z-001/Boulder_Data/BoulderSocialMedia.shp")
@@ -34,19 +39,8 @@ ggplot() +
     fill = NA, alpha = .2) +
     theme_bw()
 ```
-```{r}
-ggplot() +
-    geom_sf(data =boulder, aes(color=PT_Elev),
-    fill = NA, alpha = .2) +
-    theme_bw()
-```
-```{r}
-ggplot() +
-    geom_sf(data =boulder, aes(color=PT_Elev),
-    fill = NA, alpha = .2) +
-  scale_colour_gradientn(colours = terrain.colors(10)) +  
-  theme_bw()
-```
+
+
 ```{r}
 boulder %>%
     mutate(high_elev = ifelse(PT_Elev >= 2200, TRUE, FALSE))%>% 
@@ -55,57 +49,39 @@ ggplot() +
     fill = NA, alpha = .2)  +  
   theme_bw()
 ```
-```{r}
-boulder %>%
-  filter(DB ==  'Pano' | DB == 'Flickr') %>%
-  ggplot(aes(x=DB, y=Street_dis)) + 
-  geom_boxplot()
-```
+
+
+The map shows the location that elevation higher than 2200 meters is concentrated on south-west of Boulder Colorado. 
+
+
+
 
 ```{r}
-library(sf)
-library(ggspatial)
-library(viridisLite)
-library(viridis)
-```
 
-```{r}
-ggplot() +
-    geom_sf(data = boulder, aes(color=PT_Elev),
-    fill = NA, alpha = .2) + 
-    scale_colour_gradientn(colours = magma(10))
-```
-```{r}
-p <- ggplot() +
-  annotation_spatial(boulder) +
-  layer_spatial(boulder, aes(col = DB))
-p + scale_color_brewer(palette = "Dark2")
-```
-
-```{r}
-library(tmap)
 ## Add the data - these are specific to the vector or raster
 tm_shape(boulder) + 
   ## which variable, is there a class interval, palette, and other options
-  tm_symbols(col='PT_Elev', 
+  tm_symbols(col='NatMrk_Dis', 
              style='quantile', 
              palette = 'YlOrRd',
              border.lwd = NA,
              size = 0.1)
 ```
-```{r}
-## here we are using a simple dataset of the world 
-# tmap_mode("plot")
-data("World")
-tm_shape(World) +
-    tm_polygons("gdp_cap_est", style='quantile', legend.title = "GDP Per Capita Estimate")
-```
+
+
+The map shows distance between photo taken location and natural landmarks in Boulder Colorado. It helps identify popular viewpoints or vantage points from which these photos were captured.This information can be valuable for tourists and nature enthusiasts looking to explore and photograph these areas, as it highlights specific locations that offer picturesque views of the natural landmarks.
+
 
 ```{r}
-## the view mode creates an interactive map
-tmap_mode("view")
-tm_shape(World) +
-    tm_polygons("gdp_cap_est", style='quantile', legend.title = "GDP Per Capita Estimate")
+boulder %>%
+  filter(DB ==  'Pano' | DB == 'Flickr') %>%
+  ggplot(aes(x=DB, y=NatMrk_Dis)) + 
+  geom_boxplot()
 ```
+
+
+The figure shows using a box plot to compare mean distance of these photographs from the natural landmarks. There is no significant difference of photos between Flickr and Panramio.
+
+
 
 
